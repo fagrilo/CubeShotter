@@ -21,6 +21,8 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
+import static java.lang.Math.random;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -48,9 +50,16 @@ public class CubeShooter extends SimpleApplication {  public static void main(St
   Boolean pause = false;
   String userName;
   int dificuldade;
+  Random random = new Random();
+  List<Integer> r = new ArrayList<Integer>();
+  
   
   @Override
   public void simpleInitApp() {
+    r.add(random.nextInt(2));
+    r.add(random.nextInt(2));
+    r.add(random.nextInt(2));
+    r.add(random.nextInt(2));
     initCrossHairs();
     initKeys();
     initMark();
@@ -285,11 +294,28 @@ public class CubeShooter extends SimpleApplication {  public static void main(St
         }
     
     private void moveCube() {
+        int i = 0;
         List<Spatial> cubos = mundo.getChildren();
         if(!cubos.isEmpty()) {
             for (Spatial cubo : cubos) {
                 if(!"the Floor".equals(cubo.getName()))
-                cubo.move((float) 0.0010, 0, 0);
+                {
+                    if(r.get(i) == 0) {
+                        cubo.move((float) 0.0010, 0, 0);
+                        if(cubo.getWorldTranslation().x >= 9.0f)
+                            r.set(i, 1);
+                        else if(cubo.getWorldTranslation().x <= -9.0f)
+                            r.set(i, 1);                        
+                    }
+                    else {
+                        cubo.move((float) -0.0010, 0, 0);
+                         if(cubo.getWorldTranslation().x >= 9.0f)
+                            r.set(i, 0);
+                        else if(cubo.getWorldTranslation().x <= -9.0f)
+                            r.set(i, 0);    
+                    }
+                    i++;
+                }
             }
         }
     }
